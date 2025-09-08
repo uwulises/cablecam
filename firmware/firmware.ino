@@ -58,7 +58,18 @@ void move_relative_step(long step_pos) {
 
 // MOVE TO MM POSITION
 
-void moveto_mm(long) {}
+void moveto_mm(long step_mm) {
+  stepper.setSpeed(256);
+  step_mm = step_mm/pulse_to_mm;
+  stepper.moveTo(step_mm);
+  while (stepper.distanceToGo() != 0) {
+    stepper.run();
+  }
+  actual_pos_mm = stepper.currentPosition() * pulse_to_mm;
+  Serial.println("");
+  Serial.print("On position (mm): ");
+  Serial.println(actual_pos_mm);
+}
 
 void disable_stepper() {
   stepper.disableOutputs();
@@ -104,12 +115,16 @@ void loop() {
     if (inputString.substring(0, 6) == "Homing") {
       homeStepper();
     }
-    //call homing
     if (inputString.substring(0, 11) == "Moveto_step") {
-      long t_mm = inputString.substring(11, 18).toInt();
+      long t_step = inputString.substring(11, 18).toInt();
+      Serial.println(t_step);
+      moveto_step(t_step);
+      Serial.println(stepper.currentPosition());
+    }
+    if (inputString.substring(0, 9) == "Moveto_mm") {
+      long t_mm = inputString.substring(9, 18).toInt();
       Serial.println(t_mm);
-      moveto_step(t_mm);
-
+      moveto_mm(t_mm);
       Serial.println(stepper.currentPosition());
     }
     if (inputString.substring(0, 15) == "Disable_Stepper") {
