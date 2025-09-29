@@ -4,14 +4,14 @@ import time
 
 class SerialControl:
 
-    def __init__(self, port="COM8"):
+    def __init__(self, port="dev/ttyUSB0"):
         self.port = port
         self.serial = None
 
     def open_serial(self):
         try:
             self.serial = Serial(
-                self.port, 9600, timeout=1, write_timeout=0.1)
+                self.port, 115200, timeout=1, write_timeout=0.1)
             print("The port is available")
             serial_port = "Open"
             time.sleep(2)
@@ -38,10 +38,3 @@ class SerialControl:
         pos= str(int(mm)).zfill(7)
         func = 'Moveto_mm' + pos + '\n'
         self.serial.write(func.encode())
-
-mono = SerialControl()
-mono.open_serial()
-
-mono.moveto_mm(mm=0)
-
-mono.close_serial()
