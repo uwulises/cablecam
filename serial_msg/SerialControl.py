@@ -4,7 +4,7 @@ import time
 
 class SerialControl:
 
-    def __init__(self, port="COM9"):
+    def __init__(self, port="COM8"):
         self.port = port
         self.serial = None
 
@@ -23,16 +23,6 @@ class SerialControl:
     def close_serial(self):
         time.sleep(0.2)
         self.serial.close()
-    
-    # Send a command to the Arduino
-    def send_command(self, cmd_vel=[90,90,90]):
-        # Match case structure to send the right command to arduino
-        pos= str(int(cmd_vel[0])).zfill(3) + str(int(cmd_vel[1])).zfill(3) + str(int(cmd_vel[2])).zfill(3)
-        
-        # Get the function from switcher dictionary
-        func = 'MOVEAX' + pos + '\n'
-        # Execute the function
-        self.serial.write(func.encode())
 
     def home(self):
         self.serial.write("Homing\n".encode())
@@ -52,6 +42,6 @@ class SerialControl:
 mono = SerialControl()
 mono.open_serial()
 
-mono.moveto_mm(mm=1000)
+mono.moveto_mm(mm=0)
 
 mono.close_serial()

@@ -102,8 +102,8 @@ void setup() {
   inputString.reserve(200);
   pinMode(LIMIT_PIN1, INPUT_PULLUP);  // Active LOW
   stepper.setEnablePin(EN_PIN);
-  stepper.setMaxSpeed(1024);
-  stepper.setAcceleration(1024);
+  stepper.setMaxSpeed(800);
+  stepper.setAcceleration(800);
 }
 
 void loop() {
