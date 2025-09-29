@@ -1,4 +1,4 @@
-from serial_msg import SerialControl
+from serial_msg.SerialControl import SerialControl
 
 cablecam = SerialControl()
 cablecam.open_serial()
