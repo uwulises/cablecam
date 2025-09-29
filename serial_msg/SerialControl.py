@@ -4,7 +4,7 @@ import time
 
 class SerialControl:
 
-    def __init__(self, port="dev/ttyUSB0"):
+    def __init__(self, port="/dev/ttyUSB0"):
         self.port = port
         self.serial = None
 
