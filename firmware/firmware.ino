@@ -10,6 +10,7 @@ String inputString = "";      // a String to hold incoming data
 bool stringComplete = false;  // whether the string is complete
 double actual_pos_mm = 0.0;
 float radius_mm = 20;
+int check_home = 0;
 
 float pulse_to_mm = radius_mm * 0.18 * M_PI / 180.0;
 
@@ -86,18 +87,14 @@ void enable_stepper() {
 void homeStepper() {
   //Serial.println("Starting homing sequence...");
   stepper.setSpeed(-256);
-  while (digitalRead(LIMIT_PIN1) == HIGH) {
+  check_home=0;
+  while (check_home < 200) {
     stepper.runSpeed();
+    if (digitalRead(LIMIT_PIN1) == LOW){
+      check_home++;
+    }
   }
-  //check again the limit switch
-  stepper.setCurrentPosition(0);
-  delay(500);
-  moveto_mm(30);
-  delay(500);
-  stepper.setSpeed(-256);
-  while (digitalRead(LIMIT_PIN1) == HIGH) {
-    stepper.runSpeed();
-  }
+  check_home = 0;
   stepper.setCurrentPosition(0);
 }
 // -------------------------------------
@@ -108,9 +105,11 @@ void setup() {
   // reserve 200 bytes for the inputString:
   inputString.reserve(200);
   pinMode(LIMIT_PIN1, INPUT_PULLUP);  // Active LOW
+  pinMode(LIMIT_PIN2, INPUT_PULLUP);  // Active LOW
   stepper.setEnablePin(EN_PIN);
   stepper.setMaxSpeed(800);
   stepper.setAcceleration(800);
+  stepper.setCurrentPosition(0);
 }
 
 void loop() {
