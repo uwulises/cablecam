@@ -40,10 +40,10 @@ void moveto_step(long step_pos) {
   while (stepper.distanceToGo() != 0) {
     stepper.run();
   }
-  Serial.println("");
-  Serial.print("On position (mm): ");
+  //Serial.println("");
+  //Serial.print("On position (mm): ");
   actual_pos_mm = stepper.currentPosition() * pulse_to_mm;
-  Serial.println(actual_pos_mm);
+  //Serial.println(actual_pos_mm);
 }
 
 void move_relative_step(long step_pos) {
@@ -52,7 +52,7 @@ void move_relative_step(long step_pos) {
   while (stepper.distanceToGo() != 0) {
     stepper.run();
   }
-  Serial.println("On position");
+  //Serial.println("On position");
 }
 
 
@@ -66,32 +66,39 @@ void moveto_mm(long step_mm) {
     stepper.run();
   }
   actual_pos_mm = stepper.currentPosition() * pulse_to_mm;
-  Serial.println("");
-  Serial.print("On position (mm): ");
-  Serial.println(actual_pos_mm);
+  //Serial.println("");
+  //Serial.print("On position (mm): ");
+  //Serial.println(actual_pos_mm);
 }
 
 void disable_stepper() {
   stepper.disableOutputs();
-  Serial.println("Disabled stepper");
+  //Serial.println("Disabled stepper");
 }
 
 void enable_stepper() {
   stepper.enableOutputs();
-  Serial.println("Enabled stepper");
+  //Serial.println("Enabled stepper");
 }
 
 
 // ---------- HOMING FUNCTION ----------
 void homeStepper() {
-  Serial.println("Starting homing sequence...");
+  //Serial.println("Starting homing sequence...");
   stepper.setSpeed(-256);
   while (digitalRead(LIMIT_PIN1) == HIGH) {
     stepper.runSpeed();
   }
-  Serial.println("Switch hit");
+  //check again the limit switch
   stepper.setCurrentPosition(0);
   delay(500);
+  moveto_mm(30);
+  delay(500);
+  stepper.setSpeed(-256);
+  while (digitalRead(LIMIT_PIN1) == HIGH) {
+    stepper.runSpeed();
+  }
+  stepper.setCurrentPosition(0);
 }
 // -------------------------------------
 
@@ -109,8 +116,6 @@ void setup() {
 void loop() {
   // print the string when a newline arrives:
   if (stringComplete) {
-    Serial.println(inputString);
-
     //call homing
     if (inputString.substring(0, 6) == "Homing") {
       homeStepper();
